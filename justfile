@@ -3,114 +3,32 @@
 # infrastructure are run in Pungi.
 
 # Set a default for some recipes
-default_variant := "silverblue"
-# Default to unified compose now that it works for Silverblue & Kinoite builds
+default_variant := "niri-caelestia"
+# Default to unified compose now that it works
 unified_core := "true"
 # unified_core := "false"
 force_nocache := "true"
 # force_nocache := "false"
 
-# Default is to compose all variants
+# Default compose
 all:
-    just compose silverblue
-    just compose kinoite
-    just compose sericea
-    just compose vauxite
-    just compose lazurite
-    just compose base
     just compose niri-caelestia
 
 # Basic validation to make sure the manifests are not completely broken
 validate:
     ./ci/validate
 
-# Sync the manifests with the content of the comps groups
-comps-sync:
-    #!/bin/bash
-    set -euxo pipefail
-
-    if [[ ! -d fedora-comps ]]; then
-        git clone https://pagure.io/fedora-comps.git
-    else
-        pushd fedora-comps > /dev/null || exit 1
-        git fetch
-        git reset --hard origin/main
-        popd > /dev/null || exit 1
-    fi
-
-    default_variant={{default_variant}}
-    version="$(rpm-ostree compose tree --print-only --repo=repo fedora-${default_variant}.yaml | jq -r '."automatic-version-prefix"')"
-    ./comps-sync.py --save fedora-comps/comps-f${version}.xml.in
-
-# Output the processed manifest for a given variant (defaults to Silverblue)
+# Output the processed manifest
 manifest variant=default_variant:
-    #!/bin/bash
-    set -euxo pipefail
-
-    variant={{variant}}
-    case "${variant}" in
-        "silverblue")
-            variant_pretty="Silverblue"
-            ;;
-        "kinoite"|"kinoite-nightly"|"kinoite-beta")
-            variant_pretty="Kinoite"
-            ;;
-        "sericea")
-            variant_pretty="Sericea"
-            ;;
-        "vauxite")
-            variant_pretty="Vauxite"
-            ;;
-        "lazurite")
-            variant_pretty="Lazurite"
-            ;;
-        "base")
-            variant_pretty="Base"
-            ;;
-        "niri-caelestia")
-            variant_pretty="Niri-Caelestia"
-            ;;
-        "*")
-            echo "Unknown variant"
-            exit 1
-            ;;
-    esac
-
     rpm-ostree compose tree --print-only --repo=repo fedora-{{variant}}.yaml
 
-# Compose a specific variant of Fedora (defaults to Silverblue)
+# Compose a specific variant of Fedora
 compose variant=default_variant:
     #!/bin/bash
     set -euxo pipefail
 
     variant={{variant}}
-    case "${variant}" in
-        "silverblue")
-            variant_pretty="Silverblue"
-            ;;
-        "kinoite"|"kinoite-nightly"|"kinoite-beta")
-            variant_pretty="Kinoite"
-            ;;
-        "sericea")
-            variant_pretty="Sericea"
-            ;;
-        "vauxite")
-            variant_pretty="Vauxite"
-            ;;
-        "lazurite")
-            variant_pretty="Lazurite"
-            ;;
-        "base")
-            variant_pretty="Base"
-            ;;
-        "niri-caelestia")
-            variant_pretty="Niri-Caelestia"
-            ;;
-        "*")
-            echo "Unknown variant"
-            exit 1
-            ;;
-    esac
+    variant_pretty="Niri-Caelestia"
 
     on_failure() {
         just archive {{variant}} repo
@@ -125,13 +43,9 @@ compose variant=default_variant:
     timestamp="$(date --iso-8601=sec)"
     echo "${buildid}" > .buildid
 
-    # TODO: Pull latest build for the current release
-    # ostree pull ...
-
     version="$(rpm-ostree compose tree --print-only --repo=repo fedora-${variant}.yaml | jq -r '."automatic-version-prefix"')"
 
     echo "Composing ${variant_pretty} ${version}.${buildid} ..."
-    # To debug with gdb, use: gdb --args ...
 
     ARGS="--repo=repo --cachedir=cache"
     if [[ {{unified_core}} == "true" ]]; then
@@ -141,7 +55,6 @@ compose variant=default_variant:
         rm -rf ./tmp
         mkdir -p tmp
         export RPM_OSTREE_I_KNOW_NON_UNIFIED_CORE_IS_DEPRECATED=1
-        # TODO: Check if this is still needed
         export SYSTEMD_OFFLINE=1
     fi
     if [[ {{force_nocache}} == "true" ]]; then
@@ -172,38 +85,7 @@ compose-image variant=default_variant:
     set -euxo pipefail
 
     variant={{variant}}
-    case "${variant}" in
-        "silverblue")
-            variant_pretty="Silverblue"
-            ;;
-        "kinoite"|"kinoite-nightly"|"kinoite-beta")
-            variant_pretty="Kinoite"
-            ;;
-        "sericea")
-            variant_pretty="Sericea"
-            ;;
-        "vauxite")
-            variant_pretty="Vauxite"
-            ;;
-        "lazurite")
-            variant_pretty="Lazurite"
-            ;;
-        "base")
-            variant_pretty="Base"
-            ;;
-        "niri-caelestia")
-            variant_pretty="Niri-Caelestia"
-            ;;
-        "*")
-            echo "Unknown variant"
-            exit 1
-            ;;
-    esac
-
-    # on_failure() {
-    #     just archive {{variant}} repo
-    # }
-    # trap "on_failure" ERR
+    variant_pretty="Niri-Caelestia"
 
     ./ci/validate > /dev/null || (echo "Failed manifest validation" && exit 1)
 
@@ -213,13 +95,9 @@ compose-image variant=default_variant:
     timestamp="$(date --iso-8601=sec)"
     echo "${buildid}" > .buildid
 
-    # TODO: Pull latest build for the current release
-    # ostree pull ...
-
     version="$(rpm-ostree compose tree --print-only --repo=repo fedora-${variant}.yaml | jq -r '."automatic-version-prefix"')"
 
     echo "Composing ${variant_pretty} ${version}.${buildid} ..."
-    # To debug with gdb, use: gdb --args ...
 
     ARGS="--cachedir=cache --initialize"
     if [[ {{force_nocache}} == "true" ]]; then
@@ -246,7 +124,7 @@ compose-finalise:
     fi
     ostree summary --repo=repo --update
 
-# Get ostree repo log for a given variant
+# Get ostree repo log
 log variant=default_variant:
     ostree log --repo repo fedora/43/x86_64/{{variant}}
 
@@ -294,172 +172,12 @@ podman:
 podman-pull:
     podman pull quay.io/fedora-ostree-desktops/buildroot
 
-# Build an ISO
-lorax variant=default_variant:
-    #!/bin/bash
-    set -euxo pipefail
-
-    rm -rf iso
-    # Do not create the iso directory or lorax will fail
-    mkdir -p tmp cache/lorax
-
-    variant={{variant}}
-    case "${variant}" in
-        "silverblue")
-            variant_pretty="Silverblue"
-            volid_sub="SB"
-            ;;
-        "kinoite"|"kinoite-nightly"|"kinoite-beta")
-            variant_pretty="Kinoite"
-            volid_sub="Knt"
-            ;;
-        "sericea")
-            variant_pretty="Sericea"
-            # TODO
-            # volid_sub="???"
-            ;;
-        "vauxite")
-            variant_pretty="Vauxite"
-            volid_sub="Vxt"
-            ;;
-        "lazurite")
-            variant_pretty="Lazurite"
-            # TODO
-            # volid_sub="???"
-            ;;
-        "base")
-            variant_pretty="Base"
-            volid_sub="Base"
-            ;;
-        "niri-caelestia")
-            variant_pretty="Niri-Caelestia"
-            volid_sub="NrC"
-            ;;
-        "*")
-            echo "Unknown variant"
-            exit 1
-            ;;
-    esac
-
-    on_failure() {
-        # Archive both repo & iso here as we only archive the repo after the
-        # lorax step in the non-failing case
-        just archive {{variant}} repo
-        just archive {{variant}} iso
-    }
-    trap "on_failure" ERR
-
-    if [[ ! -d fedora-lorax-templates ]]; then
-        git clone https://pagure.io/fedora-lorax-templates.git
-    else
-        pushd fedora-lorax-templates > /dev/null || exit 1
-        git fetch
-        git reset --hard origin/main
-        popd > /dev/null || exit 1
-    fi
-
-    version_number="$(rpm-ostree compose tree --print-only --repo=repo fedora-${variant}.yaml | jq -r '."automatic-version-prefix"')"
-    version_pretty="${version_number}"
-    version="${version_number}"
-    source_url="https://kojipkgs.fedoraproject.org/compose/${version}/latest-Fedora-${version_pretty}/compose/Everything/x86_64/os/"
-    volid="Fedora-${volid_sub}-ostree-x86_64-${version_pretty}"
-
-    buildid=""
-    if [[ -f ".buildid" ]]; then
-        buildid="$(< .buildid)"
-    else
-        buildid="$(date '+%Y%m%d.0')"
-        echo "${buildid}" > .buildid
-    fi
-
-    # Stick to the latest stable runtime available here
-    flatpak_remote_refs="runtime/org.fedoraproject.Platform/x86_64/f36"
-    flatpak_apps=(
-        "app/org.fedoraproject.MediaWriter/x86_64/stable"
-        "app/org.gnome.Calculator/x86_64/stable"
-        "app/org.gnome.Calendar/x86_64/stable"
-        "app/org.gnome.Characters/x86_64/stable"
-        "app/org.gnome.Connections/x86_64/stable"
-        "app/org.gnome.Contacts/x86_64/stable"
-        "app/org.gnome.Evince/x86_64/stable"
-        "app/org.gnome.Extensions/x86_64/stable"
-        "app/org.gnome.Logs/x86_64/stable"
-        "app/org.gnome.Maps/x86_64/stable"
-        "app/org.gnome.NautilusPreviewer/x86_64/stable"
-        "app/org.gnome.TextEditor/x86_64/stable"
-        "app/org.gnome.Weather/x86_64/stable"
-        "app/org.gnome.baobab/x86_64/stable"
-        "app/org.gnome.clocks/x86_64/stable"
-        "app/org.gnome.eog/x86_64/stable"
-        "app/org.gnome.font-viewer/x86_64/stable"
-    )
-    for ref in ${flatpak_refs[@]}; do
-        flatpak_remote_refs+=" ${ref}"
-    done
-
-    pwd="$(pwd)"
-
-    lorax \
-        --product=Fedora \
-        --version=${version_pretty} \
-        --release=${buildid} \
-        --source="${source_url}" \
-        --variant="${variant_pretty}" \
-        --nomacboot \
-        --isfinal \
-        --buildarch=x86_64 \
-        --volid="${volid}" \
-        --logfile=${pwd}/logs/lorax.log \
-        --tmp=${pwd}/tmp \
-        --cachedir=cache/lorax \
-        --rootfs-size=8 \
-        --add-template=${pwd}/fedora-lorax-templates/ostree-based-installer/lorax-configure-repo.tmpl \
-        --add-template=${pwd}/fedora-lorax-templates/ostree-based-installer/lorax-embed-repo.tmpl \
-        --add-template=${pwd}/fedora-lorax-templates/ostree-based-installer/lorax-embed-flatpaks.tmpl \
-        --add-template-var=ostree_install_repo=file://${pwd}/repo \
-        --add-template-var=ostree_update_repo=file://${pwd}/repo \
-        --add-template-var=ostree_osname=fedora \
-        --add-template-var=ostree_oskey=fedora-${version_number}-primary \
-        --add-template-var=ostree_contenturl=mirrorlist=https://ostree.fedoraproject.org/mirrorlist \
-        --add-template-var=ostree_install_ref=fedora/${version}/x86_64/${variant} \
-        --add-template-var=ostree_update_ref=fedora/${version}/x86_64/${variant} \
-        --add-template-var=flatpak_remote_name=fedora \
-        --add-template-var=flatpak_remote_url=oci+https://registry.fedoraproject.org \
-        --add-template-var=flatpak_remote_refs="${flatpak_remote_refs}" \
-        ${pwd}/iso/linux
-
 upload-container variant=default_variant:
     #!/bin/bash
     set -euxo pipefail
 
     variant={{variant}}
-    case "${variant}" in
-        "silverblue")
-            variant_pretty="Silverblue"
-            ;;
-        "kinoite"|"kinoite-nightly"|"kinoite-beta")
-            variant_pretty="Kinoite"
-            ;;
-        "sericea")
-            variant_pretty="Sericea"
-            ;;
-        "vauxite")
-            variant_pretty="Vauxite"
-            ;;
-        "lazurite")
-            variant_pretty="Lazurite"
-            ;;
-        "base")
-            variant_pretty="Base"
-            ;;
-        "niri-caelestia")
-            variant_pretty="Niri-Caelestia"
-            ;;
-        "*")
-            echo "Unknown variant"
-            exit 1
-            ;;
-    esac
+    variant_pretty="Niri-Caelestia"
 
     if [[ -z ${CI_REGISTRY_USER+x} ]] || [[ -z ${CI_REGISTRY_PASSWORD+x} ]]; then
         echo "Skipping artifact archiving: Not in CI"
@@ -470,7 +188,6 @@ upload-container variant=default_variant:
         exit 0
     fi
 
-    version=""
     version="$(rpm-ostree compose tree --print-only --repo=repo fedora-${variant}.yaml | jq -r '."automatic-version-prefix"')"
 
     image="quay.io/fedora-ostree-desktops/${variant}"
@@ -490,14 +207,8 @@ upload-container variant=default_variant:
     fi
 
     skopeo login --username "${CI_REGISTRY_USER}" --password "${CI_REGISTRY_PASSWORD}" quay.io
-    # Copy fully versioned tag (major version, build date/id, git commit)
     skopeo copy --retry-times 3 "oci-archive:fedora-${variant}.ociarchive" "docker://${image}:${version}.${buildid}.${git_commit}"
-    # Update "un-versioned" tag (only major version)
     skopeo copy --retry-times 3 "docker://${image}:${version}.${buildid}.${git_commit}" "docker://${image}:${version}"
-    if [[ "${variant}" == "kinoite-nightly" ]]; then
-        # Update latest tag for kinoite-nightly only
-        skopeo copy --retry-times 3 "docker://${image}:${version}.${buildid}.${git_commit}" "docker://${image}:latest"
-    fi
 
 # Make a container image with the artifacts
 archive variant=default_variant kind="repo":
@@ -513,33 +224,7 @@ archive variant=default_variant kind="repo":
     fi
 
     variant={{variant}}
-    case "${variant}" in
-        "silverblue")
-            variant_pretty="Silverblue"
-            ;;
-        "kinoite"|"kinoite-nightly"|"kinoite-beta")
-            variant_pretty="Kinoite"
-            ;;
-        "sericea")
-            variant_pretty="Sericea"
-            ;;
-        "vauxite")
-            variant_pretty="Vauxite"
-            ;;
-        "lazurite")
-            variant_pretty="Lazurite"
-            ;;
-        "base")
-            variant_pretty="Base"
-            ;;
-        "niri-caelestia")
-            variant_pretty="Niri-Caelestia"
-            ;;
-        "*")
-            echo "Unknown variant"
-            exit 1
-            ;;
-    esac
+    variant_pretty="Niri-Caelestia"
 
     kind={{kind}}
     case "${kind}" in
@@ -555,7 +240,6 @@ archive variant=default_variant kind="repo":
             ;;
     esac
 
-    version=""
     version="$(rpm-ostree compose tree --print-only --repo=repo fedora-${variant}.yaml | jq -r '."automatic-version-prefix"')"
 
     if [[ "${kind}" == "repo" ]]; then
