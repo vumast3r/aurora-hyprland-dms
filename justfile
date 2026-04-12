@@ -248,7 +248,7 @@ compose-finalise:
 
 # Get ostree repo log for a given variant
 log variant=default_variant:
-    ostree log --repo repo fedora/rawhide/x86_64/{{variant}}
+    ostree log --repo repo fedora/43/x86_64/{{variant}}
 
 # Get the diff between two ostree commits
 diff target origin:
@@ -359,13 +359,8 @@ lorax variant=default_variant:
     fi
 
     version_number="$(rpm-ostree compose tree --print-only --repo=repo fedora-${variant}.yaml | jq -r '."automatic-version-prefix"')"
-    if [[ "$(git rev-parse --abbrev-ref HEAD)" == "main" ]] || [[ -f "fedora-rawhide.repo" ]]; then
-        version_pretty="Rawhide"
-        version="rawhide"
-    else
-        version_pretty="${version_number}"
-        version="${version_number}"
-    fi
+    version_pretty="${version_number}"
+    version="${version_number}"
     source_url="https://kojipkgs.fedoraproject.org/compose/${version}/latest-Fedora-${version_pretty}/compose/Everything/x86_64/os/"
     volid="Fedora-${volid_sub}-ostree-x86_64-${version_pretty}"
 
@@ -476,11 +471,7 @@ upload-container variant=default_variant:
     fi
 
     version=""
-    if [[ "$(git rev-parse --abbrev-ref HEAD)" == "main" ]] || [[ -f "fedora-rawhide.repo" ]]; then
-        version="rawhide"
-    else
-        version="$(rpm-ostree compose tree --print-only --repo=repo fedora-${variant}.yaml | jq -r '."automatic-version-prefix"')"
-    fi
+    version="$(rpm-ostree compose tree --print-only --repo=repo fedora-${variant}.yaml | jq -r '."automatic-version-prefix"')"
 
     image="quay.io/fedora-ostree-desktops/${variant}"
     buildid=""
@@ -565,11 +556,7 @@ archive variant=default_variant kind="repo":
     esac
 
     version=""
-    if [[ "$(git rev-parse --abbrev-ref HEAD)" == "main" ]] || [[ -f "fedora-rawhide.repo" ]]; then
-        version="rawhide"
-    else
-        version="$(rpm-ostree compose tree --print-only --repo=repo fedora-${variant}.yaml | jq -r '."automatic-version-prefix"')"
-    fi
+    version="$(rpm-ostree compose tree --print-only --repo=repo fedora-${variant}.yaml | jq -r '."automatic-version-prefix"')"
 
     if [[ "${kind}" == "repo" ]]; then
         tar --create --file repo.tar.zst --zstd repo

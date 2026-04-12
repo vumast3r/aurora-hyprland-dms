@@ -7,7 +7,7 @@ packages:
   - NetworkManager-wwan
   - abattis-cantarell-vf-fonts
   - acl
-  - adwaita-qt5
+  - adwaita-qt6
   - alsa-ucm
   - alsa-utils
   - amd-gpu-firmware
@@ -46,7 +46,6 @@ packages:
   - fedora-bookmarks
   - fedora-chromium-config
   - fedora-flathub-remote
-  - fedora-repos-modular
   - fedora-workstation-backgrounds
   - fedora-workstation-repositories
   - file
@@ -54,7 +53,6 @@ packages:
   - firefox
   - firewalld
   - fpaste
-  - fros-gnome
   - fwupd
   - gamemode
   - glibc
@@ -103,23 +101,9 @@ packages:
   - iptables-nft
   - iptstate
   - iputils
-  - iwl100-firmware
-  - iwl1000-firmware
-  - iwl105-firmware
-  - iwl135-firmware
-  - iwl2000-firmware
-  - iwl2030-firmware
-  - iwl3160-firmware
-  - iwl3945-firmware
-  - iwl4965-firmware
-  - iwl5000-firmware
-  - iwl5150-firmware
-  - iwl6000-firmware
-  - iwl6000g2a-firmware
-  - iwl6000g2b-firmware
-  - iwl6050-firmware
-  - iwl7260-firmware
-  - iwlax2xx-firmware
+  - iwlegacy-firmware
+  - iwlwifi-dvm-firmware
+  - iwlwifi-mvm-firmware
   - jomolhari-fonts
   - kbd
   - kernel
@@ -128,7 +112,7 @@ packages:
   - liberation-mono-fonts
   - liberation-sans-fonts
   - liberation-serif-fonts
-  - libertas-usb8388-firmware
+  - libertas-firmware
   - libglvnd-gles
   - linux-firmware
   - logrotate
@@ -230,7 +214,6 @@ packages:
   - xorg-x11-drv-amdgpu
   - xorg-x11-drv-ati
   - xorg-x11-drv-evdev
-  - xorg-x11-drv-fbdev
   - xorg-x11-drv-libinput
   - xorg-x11-drv-nouveau
   - xorg-x11-drv-qxl
@@ -250,12 +233,10 @@ packages-x86_64:
   - virtualbox-guest-additions
   - xorg-x11-drv-intel
   - xorg-x11-drv-openchrome
-  - xorg-x11-drv-vesa
   - xorg-x11-drv-vmware
 packages-aarch64:
   - hyperv-daemons
   - open-vm-tools-desktop
-  - xorg-x11-drv-armsoc
 packages-ppc64le:
   - lsvpd
   - powerpc-utils

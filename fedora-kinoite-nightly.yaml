@@ -1,6 +1,6 @@
 # Use a distinct base set of packages until we have more Qt6 builds
 include: kde-desktop-pkgs-qt6.yaml
-ref: fedora/rawhide/${basearch}/kinoite
+ref: fedora/43/${basearch}/kinoite
 rojig:
   name: fedora-kde-nightly
   summary: "Fedora Kinoite Nightly (KDE) base image"

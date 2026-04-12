@@ -28,7 +28,6 @@ packages:
   - gnome-initial-setup
   - gnome-remote-desktop
   - gnome-session-wayland-session
-  - gnome-session-xsession
   - gnome-settings-daemon
   - gnome-shell
   - gnome-software
@@ -46,7 +45,6 @@ packages:
   - gvfs-gphoto2
   - gvfs-mtp
   - gvfs-smb
-  - libproxy-duktape
   - librsvg2
   - libsane-hpaio
   - mesa-dri-drivers
