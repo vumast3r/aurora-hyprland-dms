@@ -1,5 +1,0 @@
-// For format details, see https://aka.ms/devcontainer.json.
-{
-	"name": "aurora-devcontainer",
-	"image": "ghcr.io/ublue-os/devcontainer:latest"
-}

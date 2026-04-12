@@ -1,149 +1,31 @@
-ARG BASE_IMAGE_ORG="${BASE_IMAGE_ORG}:-quay.io/fedora-ostree-desktops"
-ARG BASE_IMAGE_NAME="${BASE_IMAGE_NAME}:-kinoite"
-ARG BASE_IMAGE="${BASE_IMAGE_ORG}/${BASE_IMAGE_NAME}"
-ARG FEDORA_MAJOR_VERSION="${FEDORA_MAJOR_VERSION}:-43"
-ARG COMMON_IMAGE="${COMMON_IMAGE}:-ghcr.io/get-aurora-dev/common:latest"
-ARG COMMON_IMAGE_SHA=""
-ARG BREW_IMAGE="${BREW_IMAGE}:-ghcr.io/ublue-os/brew:latest"
-ARG BREW_IMAGE_SHA=""
+ARG BASE_IMAGE="quay.io/fedora-ostree-desktops/base"
+ARG FEDORA_MAJOR_VERSION="43"
 
-FROM ${COMMON_IMAGE}@${COMMON_IMAGE_SHA} AS common
-FROM ${BREW_IMAGE}@${BREW_IMAGE_SHA} AS brew
+FROM ${BASE_IMAGE}:${FEDORA_MAJOR_VERSION}
 
-FROM scratch AS ctx
-COPY /build_files /build_files
+ARG FEDORA_MAJOR_VERSION="43"
 
-# https://github.com/get-aurora-dev/common
-COPY --from=common /logos /system_files/shared
-COPY --from=common /system_files /system_files
-COPY --from=common /wallpapers /system_files/shared
+# Copy build scripts and system files into the image
+COPY build_files /tmp/build_files
+COPY system_files /tmp/system_files
 
-# https://github.com/ublue-os/brew
-COPY --from=brew /system_files /system_files/shared
+# Install niri-caelestia packages
+RUN --mount=type=cache,dst=/var/cache/libdnf5 \
+    chmod +x /tmp/build_files/*.sh && \
+    /tmp/build_files/01-packages.sh
 
-# Overwrite files from common if necessary
-COPY /system_files /system_files
+# Build and install niri-caelestia-shell from source
+RUN --mount=type=cache,dst=/var/cache/libdnf5 \
+    /tmp/build_files/02-caelestia-shell.sh
 
-## aurora image section
-FROM ${BASE_IMAGE}:${FEDORA_MAJOR_VERSION} AS base
+# Install configs and system files
+RUN /tmp/build_files/03-configs.sh
 
-ARG AKMODS_FLAVOR="coreos-stable"
-ARG BASE_IMAGE_NAME="${BASE_IMAGE_NAME}"
-ARG FEDORA_MAJOR_VERSION=""
-ARG IMAGE_NAME="aurora"
-ARG IMAGE_VENDOR="ublue-os"
-ARG KERNEL=""
-ARG SHA_HEAD_SHORT="dedbeef"
-ARG UBLUE_IMAGE_TAG="stable"
-ARG VERSION=""
-ARG IMAGE_FLAVOR=""
-
-# Prep
-RUN --mount=type=tmpfs,dst=/boot \
-    --mount=type=bind,from=ctx,source=/,target=/ctx \
-    --mount=type=cache,dst=/var/cache/libdnf5 \
-    /ctx/build_files/shared/build.sh
-
-# so ghcurl wrapper is available to all later RUNs
-ENV PATH="/tmp/scripts/helpers:${PATH}"
-
-# Generate image-info.json, os-release
-RUN --network=none \
-    --mount=type=tmpfs,dst=/boot \
-    --mount=type=bind,from=ctx,source=/,target=/ctx \
-    /ctx/build_files/base/00-image-info.sh
-
-# Install Additional Packages
-RUN --mount=type=tmpfs,dst=/boot \
-    --mount=type=bind,from=ctx,source=/,target=/ctx \
-    --mount=type=cache,dst=/var/cache/libdnf5 \
-    /ctx/build_files/base/03-packages.sh
-
-# Install Kernel and Akmods
-RUN --mount=type=tmpfs,dst=/boot \
-    --mount=type=bind,from=ctx,source=/,target=/ctx \
-    --mount=type=cache,dst=/var/cache/libdnf5 \
-    --mount=type=secret,id=GITHUB_TOKEN \
-    /ctx/build_files/base/04-install-kernel-akmods.sh
-
-# Wallpapers/Apperance
-RUN --network=none \
-    --mount=type=tmpfs,dst=/boot \
-    --mount=type=bind,from=ctx,source=/,target=/ctx \
-    /ctx/build_files/base/05-branding.sh
-
-# Install Overrides and Fetch Install
-RUN --mount=type=tmpfs,dst=/boot \
-    --mount=type=bind,from=ctx,source=/,target=/ctx \
-    --mount=type=cache,dst=/var/cache/libdnf5 \
-    --mount=type=secret,id=GITHUB_TOKEN \
-    /ctx/build_files/base/06-override-install.sh
-
-# Beta
-RUN --mount=type=tmpfs,dst=/boot \
-    --mount=type=bind,from=ctx,source=/,target=/ctx \
-    --mount=type=cache,dst=/var/cache/libdnf5 \
-    if [ "${UBLUE_IMAGE_TAG}" == "beta" ] ; then \
-      /ctx/build_files/base/10-beta.sh; \
-    fi
-
-# Enable systemd services and Remove Items
-RUN --network=none \
-    --mount=type=tmpfs,dst=/boot \
-    --mount=type=bind,from=ctx,source=/,target=/ctx \
-    --mount=type=cache,dst=/var/cache/libdnf5 \
-    /ctx/build_files/base/17-cleanup.sh
-
-RUN --mount=type=tmpfs,dst=/boot \
-    --mount=type=bind,from=ctx,source=/,target=/ctx \
-    --mount=type=cache,dst=/var/cache/libdnf5 \
-    /ctx/build_files/base/18-workarounds.sh
-
-# Regenerate initramfs
-RUN --network=none \
-    --mount=type=tmpfs,dst=/boot \
-    --mount=type=bind,from=ctx,source=/,target=/ctx \
-    /ctx/build_files/base/19-initramfs.sh
-
-# Aurora-DX
-RUN --mount=type=tmpfs,dst=/boot \
-    --mount=type=bind,from=ctx,source=/,target=/ctx \
-    --mount=type=cache,dst=/var/cache/libdnf5 \
-    --mount=type=secret,id=GITHUB_TOKEN \
-    if [ "${IMAGE_FLAVOR}" == "dx" ] ; then \
-      /ctx/build_files/shared/build-dx.sh; \
-    fi
-
-RUN --mount=type=tmpfs,dst=/boot \
-    --mount=type=bind,from=ctx,source=/,target=/ctx \
-    --mount=type=cache,dst=/var/cache/libdnf5 \
-    --mount=type=secret,id=GITHUB_TOKEN \
-    if [ "${IMAGE_FLAVOR}" == "dx" ] ; then \
-      /ctx/build_files/dx/00-dx.sh; \
-    fi
-
-RUN --network=none \
-    --mount=type=bind,from=ctx,source=/,target=/ctx \
-    /ctx/build_files/shared/validate-repos.sh
-
-RUN --network=none \
-    --mount=type=bind,from=ctx,source=/,target=/ctx \
-    /ctx/build_files/shared/clean-stage.sh
+# Cleanup
+RUN /tmp/build_files/04-cleanup.sh
 
 # Sanity checks
-RUN --network=none \
-    --mount=type=bind,from=ctx,source=/,target=/ctx \
-    /ctx/build_files/base/20-tests.sh
-
-RUN --network=none \
-    --mount=type=bind,from=ctx,source=/,target=/ctx \
-    if [ "${IMAGE_FLAVOR}" == "dx" ] ; then \
-      /ctx/build_files/dx/10-tests-dx.sh; \
-    fi
-
-# Needs to be here to make the main image build strict (no /opt there)
-# This is for downstream images/stuff like k0s
-RUN rm -rf /opt && ln -s /var/opt /opt
+RUN /tmp/build_files/05-tests.sh
 
 CMD ["/sbin/init"]
 
