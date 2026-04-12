@@ -1,6 +1,6 @@
 [danklinux]
 name=Copr repo for danklinux owned by avengemedia
-baseurl=https://download.copr.fedorainfracloud.org/results/avengemedia/danklinux/fedora-$releasever-$basearch/
+baseurl=https://download.copr.fedorainfracloud.org/results/avengemedia/danklinux/fedora-43-$basearch/
 type=rpm-md
 skip_if_unavailable=True
 gpgcheck=1
