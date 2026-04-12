@@ -29,6 +29,30 @@ exclude-packages:
   - grubby
   - tracker
   - tracker-miners
+  # packages removed/renamed in f43 (base list was synced for rawhide/f39)
+  - adwaita-qt5
+  - fedora-repos-modular
+  - fros-gnome
+  - iwl100-firmware
+  - iwl1000-firmware
+  - iwl105-firmware
+  - iwl135-firmware
+  - iwl2000-firmware
+  - iwl2030-firmware
+  - iwl3160-firmware
+  - iwl3945-firmware
+  - iwl4965-firmware
+  - iwl5000-firmware
+  - iwl5150-firmware
+  - iwl6000-firmware
+  - iwl6000g2a-firmware
+  - iwl6000g2b-firmware
+  - iwl6050-firmware
+  - iwl7260-firmware
+  - iwlax2xx-firmware
+  - libertas-usb8388-firmware
+  - xorg-x11-drv-fbdev
+  - xorg-x11-drv-vesa
 
 postprocess-script: postprocess-niri-caelestia.sh
 
