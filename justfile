@@ -18,6 +18,7 @@ all:
     just compose vauxite
     just compose lazurite
     just compose base
+    just compose niri-caelestia
 
 # Basic validation to make sure the manifests are not completely broken
 validate:
@@ -66,6 +67,9 @@ manifest variant=default_variant:
         "base")
             variant_pretty="Base"
             ;;
+        "niri-caelestia")
+            variant_pretty="Niri-Caelestia"
+            ;;
         "*")
             echo "Unknown variant"
             exit 1
@@ -98,6 +102,9 @@ compose variant=default_variant:
             ;;
         "base")
             variant_pretty="Base"
+            ;;
+        "niri-caelestia")
+            variant_pretty="Niri-Caelestia"
             ;;
         "*")
             echo "Unknown variant"
@@ -183,6 +190,9 @@ compose-image variant=default_variant:
             ;;
         "base")
             variant_pretty="Base"
+            ;;
+        "niri-caelestia")
+            variant_pretty="Niri-Caelestia"
             ;;
         "*")
             echo "Unknown variant"
@@ -321,6 +331,10 @@ lorax variant=default_variant:
             variant_pretty="Base"
             volid_sub="Base"
             ;;
+        "niri-caelestia")
+            variant_pretty="Niri-Caelestia"
+            volid_sub="NrC"
+            ;;
         "*")
             echo "Unknown variant"
             exit 1
@@ -443,6 +457,9 @@ upload-container variant=default_variant:
         "base")
             variant_pretty="Base"
             ;;
+        "niri-caelestia")
+            variant_pretty="Niri-Caelestia"
+            ;;
         "*")
             echo "Unknown variant"
             exit 1
@@ -523,6 +540,9 @@ archive variant=default_variant kind="repo":
             ;;
         "base")
             variant_pretty="Base"
+            ;;
+        "niri-caelestia")
+            variant_pretty="Niri-Caelestia"
             ;;
         "*")
             echo "Unknown variant"

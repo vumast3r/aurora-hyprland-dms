@@ -111,3 +111,14 @@ build base:
       - .buildid
       - logs
     expire_in: 2 week
+
+build niri-caelestia:
+  stage: build
+  script:
+    - just compose-image niri-caelestia
+    - just upload-container niri-caelestia
+  artifacts:
+    paths:
+      - .buildid
+      - logs
+    expire_in: 2 week

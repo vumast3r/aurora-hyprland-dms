@@ -1,0 +1,76 @@
+# Niri + Caelestia Shell desktop packages
+include: fedora-common-ostree.yaml
+packages:
+  # Compositor
+  - niri
+  - xwayland-satellite
+  # Shell framework (from COPR avengemedia/danklinux)
+  - quickshell-git
+  # Desktop portals & session
+  - xdg-desktop-portal
+  - xdg-desktop-portal-gnome
+  - xdg-desktop-portal-gtk
+  - gnome-keyring
+  - gnome-keyring-pam
+  - polkit
+  # Audio & media
+  - pipewire
+  - wireplumber
+  - pipewire-pulseaudio
+  - pipewire-libs
+  - cava
+  - aubio
+  - pavucontrol
+  - playerctl
+  # Display & brightness
+  - brightnessctl
+  - ddcutil
+  # Networking
+  - NetworkManager
+  - NetworkManager-wifi
+  - bluez
+  # Clipboard & screenshots
+  - wl-clipboard
+  - cliphist
+  - grim
+  - swappy
+  # Terminal & file manager
+  - kitty
+  - Thunar
+  - thunar-archive-plugin
+  # Shell scripting runtime
+  - fish
+  - bash
+  - curl
+  - jq
+  # OCR & utilities
+  - tesseract
+  - tesseract-langpack-eng
+  - libqalculate
+  - qalculate-gtk
+  - lm_sensors
+  # Theming (from COPR avengemedia/danklinux)
+  - matugen
+  # Fonts
+  - jetbrains-mono-fonts-all
+  - google-noto-sans-fonts
+  - google-roboto-fonts
+  - fira-code-fonts
+  - google-noto-emoji-fonts
+  # Qt6 runtime (for Quickshell/QML)
+  - qt6-qtbase
+  - qt6-qtdeclarative
+  - qt6-qtwayland
+  - qt6-qtsvg
+  - qt6-qt5compat
+  - qt6-qtmultimedia
+  # XWayland support
+  - xorg-x11-server-Xwayland
+  # Login manager
+  - sddm
+  # Misc desktop
+  - pinentry-gnome3
+  - plymouth-system-theme
+  - fprintd-pam
+  - bolt
+  - system-config-printer
