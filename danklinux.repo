@@ -1,4 +1,4 @@
-[copr:copr.fedorainfracloud.org:avengemedia:danklinux]
+[danklinux]
 name=Copr repo for danklinux owned by avengemedia
 baseurl=https://download.copr.fedorainfracloud.org/results/avengemedia/danklinux/fedora-$releasever-$basearch/
 type=rpm-md
