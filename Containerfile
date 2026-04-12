@@ -1,4 +1,4 @@
-ARG BASE_IMAGE="quay.io/fedora-ostree-desktops/base"
+ARG BASE_IMAGE="quay.io/fedora-ostree-desktops/kinoite"
 ARG FEDORA_MAJOR_VERSION="43"
 
 FROM ${BASE_IMAGE}:${FEDORA_MAJOR_VERSION}
