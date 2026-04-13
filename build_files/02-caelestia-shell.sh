@@ -25,7 +25,7 @@ fc-cache -f
 
 # Remove build-time packages to keep image small
 rpm -e --nodeps cmake ninja-build gcc-c++ cpp gcc \
-    qt6-qtdeclarative-devel qt6-qtbase-devel \
+    qt6-qtdeclarative-devel qt6-qtbase-devel qt6-qtmultimedia-devel \
     pipewire-devel aubio-devel \
     kernel-headers glibc-devel libstdc++-devel \
     2>/dev/null || true

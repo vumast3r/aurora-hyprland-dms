@@ -143,7 +143,7 @@ dnf5 -y install "${NIRI_PACKAGES[@]}"
 # Build-time dependencies for niri-caelestia-shell
 dnf5 -y install \
     cmake ninja-build gcc-c++ git \
-    qt6-qtdeclarative-devel qt6-qtbase-devel \
+    qt6-qtdeclarative-devel qt6-qtbase-devel qt6-qtmultimedia-devel \
     pipewire-devel aubio-devel
 
 echo "::endgroup::"
