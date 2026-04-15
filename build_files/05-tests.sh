@@ -16,7 +16,7 @@ REQUIRED_PACKAGES=(
     matugen
     xwayland-satellite
     lm_sensors
-    power-profiles-daemon
+    tuned-ppd
     app2unit
     satty
     nwg-look
@@ -49,7 +49,7 @@ test -f /etc/skel/.config/caelestia/shell.json || { echo "Missing caelestia conf
 systemctl is-enabled greetd.service >/dev/null || { echo "greetd not enabled"; exit 1; }
 test -f /etc/greetd/config.toml || { echo "Missing greetd config"; exit 1; }
 systemctl is-enabled NetworkManager.service >/dev/null || { echo "NetworkManager not enabled"; exit 1; }
-systemctl is-enabled power-profiles-daemon.service >/dev/null || { echo "power-profiles-daemon not enabled"; exit 1; }
+systemctl is-enabled tuned-ppd.service >/dev/null || { echo "tuned-ppd not enabled"; exit 1; }
 
 echo "All checks passed."
 echo "::endgroup::"

@@ -123,11 +123,10 @@ NIRI_PACKAGES=(
     aubio
     pavucontrol
     playerctl
-    # Display, brightness, sensors & power
+    # Display, brightness, sensors (tuned-ppd comes from kinoite base)
     brightnessctl
     ddcutil
     lm_sensors
-    power-profiles-daemon
     # Clipboard & screenshots
     wl-clipboard
     grim
