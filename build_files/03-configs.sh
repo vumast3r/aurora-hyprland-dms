@@ -11,5 +11,6 @@ systemctl enable greetd.service
 systemctl set-default graphical.target
 systemctl enable NetworkManager.service
 systemctl enable bluetooth.service
+systemctl enable power-profiles-daemon.service
 
 echo "::endgroup::"

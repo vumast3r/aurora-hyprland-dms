@@ -17,10 +17,7 @@ cmake --build build
 cmake --install build
 rm -rf "$SHELL_DIR"
 
-# Install Material Symbols font
-mkdir -p /usr/share/fonts/material-symbols
-curl -Lo /usr/share/fonts/material-symbols/MaterialSymbolsRounded.ttf \
-    "https://github.com/google/material-design-icons/raw/master/variablefont/MaterialSymbolsRounded%5BFILL%2CGRAD%2Copsz%2Cwght%5D.ttf"
+# Rebuild font cache (material-symbols-fonts RPM was installed in 01-packages.sh)
 fc-cache -f
 
 # Remove build-time packages to keep image small

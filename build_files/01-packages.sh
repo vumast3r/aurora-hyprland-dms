@@ -88,10 +88,20 @@ dnf5 -y install \
     --enablerepo="copr:copr.fedorainfracloud.org:avengemedia:danklinux" \
     quickshell-git cliphist matugen
 
-# Enable celestelove/libcava COPR (libcava / libcava-devel)
-dnf5 -y copr enable celestelove/libcava
-dnf5 -y copr disable celestelove/libcava
+# Enable additional COPRs (isolated enablement: enable then disable)
+for copr in \
+    celestelove/libcava \
+    celestelove/app2unit \
+    celestelove/caelestia \
+    mineiro/satty \
+    solopasha/hyprland \
+    brycensranch/gpu-screen-recorder-git
+do
+    dnf5 -y copr enable "$copr"
+    dnf5 -y copr disable "$copr"
+done
 
+# Runtime libcava from celestelove/libcava
 dnf5 -y install \
     --enablerepo="copr:copr.fedorainfracloud.org:celestelove:libcava" \
     libcava
@@ -113,13 +123,15 @@ NIRI_PACKAGES=(
     aubio
     pavucontrol
     playerctl
-    # Display & brightness
+    # Display, brightness, sensors & power
     brightnessctl
     ddcutil
+    lm_sensors
+    power-profiles-daemon
     # Clipboard & screenshots
     wl-clipboard
     grim
-    swappy
+    slurp
     # Terminal & file manager
     kitty
     Thunar
@@ -131,19 +143,18 @@ NIRI_PACKAGES=(
     tesseract
     tesseract-langpack-eng
     libqalculate
-    qalculate-gtk
     # Fonts
     jetbrains-mono-fonts-all
     google-noto-sans-fonts
     google-roboto-fonts
-    fira-code-fonts
     # Qt6 extras for Quickshell
     qt6-qtsvg
     qt6-qt5compat
     qt6-qtmultimedia
+    # Theming
+    papirus-icon-theme
     # Misc desktop
-    pinentry-gnome3
-    bolt
+    pinentry-qt
     # Extras
     fastfetch
     distrobox
@@ -151,6 +162,31 @@ NIRI_PACKAGES=(
 )
 
 dnf5 -y install "${NIRI_PACKAGES[@]}"
+
+# app2unit (caelestia app launcher helper)
+dnf5 -y install \
+    --enablerepo="copr:copr.fedorainfracloud.org:celestelove:app2unit" \
+    app2unit
+
+# Caelestia fonts (rubik, cascadia-code-nerd, material-symbols)
+dnf5 -y install \
+    --enablerepo="copr:copr.fedorainfracloud.org:celestelove:caelestia" \
+    rubik-fonts cascadia-code-nerd-fonts material-symbols-fonts
+
+# Screenshot annotator
+dnf5 -y install \
+    --enablerepo="copr:copr.fedorainfracloud.org:mineiro:satty" \
+    satty
+
+# GTK theme tweaker
+dnf5 -y install \
+    --enablerepo="copr:copr.fedorainfracloud.org:solopasha:hyprland" \
+    nwg-look
+
+# Screen recorder with instant-replay UI
+dnf5 -y install \
+    --enablerepo="copr:copr.fedorainfracloud.org:brycensranch:gpu-screen-recorder-git" \
+    gpu-screen-recorder gpu-screen-recorder-ui
 
 # Install niri without weak deps (skips waybar and swaylock recommendations;
 # caelestia-shell provides the bar and lock screen)

@@ -15,6 +15,17 @@ REQUIRED_PACKAGES=(
     cliphist
     matugen
     xwayland-satellite
+    lm_sensors
+    power-profiles-daemon
+    app2unit
+    satty
+    nwg-look
+    gpu-screen-recorder
+    rubik-fonts
+    cascadia-code-nerd-fonts
+    material-symbols-fonts
+    pinentry-qt
+    libcava
 )
 
 for package in "${REQUIRED_PACKAGES[@]}"; do
@@ -28,7 +39,7 @@ test -d /usr/share/quickshell/niri-caelestia-shell || { echo "niri-caelestia-she
 test -f /usr/share/wayland-sessions/niri-caelestia.desktop || { echo "Missing wayland session desktop file"; exit 1; }
 
 # Check Material Symbols font
-test -f /usr/share/fonts/material-symbols/MaterialSymbolsRounded.ttf || { echo "Missing Material Symbols font"; exit 1; }
+test -f /usr/share/fonts/material-symbols-fonts/MaterialSymbolsRounded.ttf || { echo "Missing Material Symbols font"; exit 1; }
 
 # Check default configs
 test -f /etc/skel/.config/niri/config.kdl || { echo "Missing niri config"; exit 1; }
@@ -38,6 +49,7 @@ test -f /etc/skel/.config/caelestia/shell.json || { echo "Missing caelestia conf
 systemctl is-enabled greetd.service >/dev/null || { echo "greetd not enabled"; exit 1; }
 test -f /etc/greetd/config.toml || { echo "Missing greetd config"; exit 1; }
 systemctl is-enabled NetworkManager.service >/dev/null || { echo "NetworkManager not enabled"; exit 1; }
+systemctl is-enabled power-profiles-daemon.service >/dev/null || { echo "power-profiles-daemon not enabled"; exit 1; }
 
 echo "All checks passed."
 echo "::endgroup::"
