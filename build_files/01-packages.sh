@@ -102,7 +102,6 @@ NIRI_PACKAGES=(
     greetd
     tuigreet
     # Compositor
-    niri
     xwayland-satellite
     # Desktop portals
     xdg-desktop-portal-gnome
@@ -152,6 +151,10 @@ NIRI_PACKAGES=(
 )
 
 dnf5 -y install "${NIRI_PACKAGES[@]}"
+
+# Install niri without weak deps (skips waybar and swaylock recommendations;
+# caelestia-shell provides the bar and lock screen)
+dnf5 -y install --setopt=install_weak_deps=False niri
 
 # Build-time dependencies for niri-caelestia-shell
 dnf5 -y install \
