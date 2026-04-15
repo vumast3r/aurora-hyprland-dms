@@ -21,11 +21,11 @@ RUN --mount=type=cache,dst=/var/cache/libdnf5 \
 # Install configs and system files
 RUN /tmp/build_files/03-configs.sh
 
-# Cleanup
-RUN /tmp/build_files/04-cleanup.sh
-
 # Sanity checks
 RUN /tmp/build_files/05-tests.sh
+
+# Cleanup
+RUN /tmp/build_files/04-cleanup.sh
 
 CMD ["/sbin/init"]
 
