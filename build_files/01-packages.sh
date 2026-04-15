@@ -86,6 +86,14 @@ dnf5 -y install \
     --enablerepo="copr:copr.fedorainfracloud.org:avengemedia:danklinux" \
     quickshell-git cliphist matugen
 
+# Enable celestelove/libcava COPR (libcava / libcava-devel)
+dnf5 -y copr enable celestelove/libcava
+dnf5 -y copr disable celestelove/libcava
+
+dnf5 -y install \
+    --enablerepo="copr:copr.fedorainfracloud.org:celestelove:libcava" \
+    libcava
+
 # Packages to add on top of kinoite base
 NIRI_PACKAGES=(
     # Compositor
@@ -145,6 +153,11 @@ dnf5 -y install \
     cmake ninja-build gcc-c++ git \
     qt6-qtdeclarative-devel qt6-qtbase-devel qt6-qtmultimedia-devel \
     kf6-networkmanager-qt-devel \
-    pipewire-devel aubio-devel
+    pipewire-devel aubio-devel \
+    libqalculate-devel
+
+dnf5 -y install \
+    --enablerepo="copr:copr.fedorainfracloud.org:celestelove:libcava" \
+    libcava-devel
 
 echo "::endgroup::"
