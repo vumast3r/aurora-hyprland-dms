@@ -6,7 +6,8 @@ echo "::group:: Sanity checks"
 REQUIRED_PACKAGES=(
     niri
     quickshell-git
-    sddm
+    greetd
+    tuigreet
     pipewire
     wireplumber
     kitty
@@ -34,7 +35,8 @@ test -f /etc/skel/.config/niri/config.kdl || { echo "Missing niri config"; exit 
 test -f /etc/skel/.config/caelestia/shell.json || { echo "Missing caelestia config"; exit 1; }
 
 # Check services
-systemctl is-enabled sddm.service >/dev/null || { echo "sddm not enabled"; exit 1; }
+systemctl is-enabled greetd.service >/dev/null || { echo "greetd not enabled"; exit 1; }
+test -f /etc/greetd/config.toml || { echo "Missing greetd config"; exit 1; }
 systemctl is-enabled NetworkManager.service >/dev/null || { echo "NetworkManager not enabled"; exit 1; }
 
 echo "All checks passed."

@@ -67,7 +67,9 @@ KDE_REMOVE=(
     khelpcenter
     phonon-qt5-backend-gstreamer
     qt-at-spi
+    sddm
     sddm-breeze
+    sddm-kcm
     plasma-lookandfeel-fedora
 )
 
@@ -96,6 +98,9 @@ dnf5 -y install \
 
 # Packages to add on top of kinoite base
 NIRI_PACKAGES=(
+    # Login manager
+    greetd
+    tuigreet
     # Compositor
     niri
     xwayland-satellite
