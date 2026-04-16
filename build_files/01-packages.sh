@@ -1,10 +1,10 @@
 #!/usr/bin/bash
 set -eoux pipefail
 
-echo "::group:: Install niri-caelestia packages"
+echo "::group:: Install hyprland-dms packages"
 
 # Remove KDE-specific packages we don't need
-# (kinoite base provides SDDM, Qt6, pipewire, NetworkManager, etc. which we keep)
+# (kinoite base provides Qt6, pipewire, NetworkManager, etc. which we keep)
 KDE_REMOVE=(
     plasma-desktop
     plasma-workspace
@@ -79,40 +79,23 @@ if [[ "${#INSTALLED_KDE[@]}" -gt 0 ]]; then
     dnf5 -y remove "${INSTALLED_KDE[@]}" || true
 fi
 
-# Enable danklinux COPR (quickshell-git, cliphist, matugen)
-dnf5 -y copr enable avengemedia/danklinux
-dnf5 -y copr disable avengemedia/danklinux
-
-# Install COPR packages (isolated enablement)
-dnf5 -y install \
-    --enablerepo="copr:copr.fedorainfracloud.org:avengemedia:danklinux" \
-    quickshell-git cliphist matugen
-
-# Enable additional COPRs (isolated enablement: enable then disable)
+# Enable COPRs (isolated enablement: enable then disable)
 for copr in \
-    celestelove/libcava \
-    celestelove/app2unit \
-    celestelove/caelestia \
-    mineiro/satty \
+    avengemedia/danklinux \
+    avengemedia/dms \
     solopasha/hyprland \
+    mineiro/satty \
     brycensranch/gpu-screen-recorder-git
 do
     dnf5 -y copr enable "$copr"
     dnf5 -y copr disable "$copr"
 done
 
-# Runtime libcava from celestelove/libcava
-dnf5 -y install \
-    --enablerepo="copr:copr.fedorainfracloud.org:celestelove:libcava" \
-    libcava
-
 # Packages to add on top of kinoite base
-NIRI_PACKAGES=(
+HYPR_PACKAGES=(
     # Login manager
     greetd
     tuigreet
-    # Compositor
-    xwayland-satellite
     # Desktop portals
     xdg-desktop-portal-gnome
     xdg-desktop-portal-gtk
@@ -120,7 +103,6 @@ NIRI_PACKAGES=(
     gnome-keyring-pam
     # Audio extras
     cava
-    aubio
     pavucontrol
     playerctl
     # Display, brightness, sensors (tuned-ppd comes from kinoite base)
@@ -141,7 +123,6 @@ NIRI_PACKAGES=(
     # OCR & utilities
     tesseract
     tesseract-langpack-eng
-    libqalculate
     # Fonts
     jetbrains-mono-fonts-all
     google-noto-sans-fonts
@@ -152,6 +133,8 @@ NIRI_PACKAGES=(
     qt6-qtmultimedia
     # Theming
     papirus-icon-theme
+    # Services DMS integrates with
+    accountsservice
     # Misc desktop
     pinentry-qt
     # Extras
@@ -160,47 +143,27 @@ NIRI_PACKAGES=(
     htop
 )
 
-dnf5 -y install "${NIRI_PACKAGES[@]}"
+dnf5 -y install "${HYPR_PACKAGES[@]}"
 
-# app2unit (caelestia app launcher helper)
+# Hyprland stack from solopasha/hyprland
 dnf5 -y install \
-    --enablerepo="copr:copr.fedorainfracloud.org:celestelove:app2unit" \
-    app2unit
+    --enablerepo="copr:copr.fedorainfracloud.org:solopasha:hyprland" \
+    hyprland hyprlock hypridle hyprpaper xdg-desktop-portal-hyprland nwg-look
 
-# Caelestia fonts (rubik, cascadia-code-nerd, material-symbols)
+# DankMaterialShell runtime (shell, cli, system monitor, search, fonts, quickshell)
 dnf5 -y install \
-    --enablerepo="copr:copr.fedorainfracloud.org:celestelove:caelestia" \
-    rubik-fonts cascadia-code-nerd-fonts material-symbols-fonts
+    --enablerepo="copr:copr.fedorainfracloud.org:avengemedia:danklinux" \
+    --enablerepo="copr:copr.fedorainfracloud.org:avengemedia:dms" \
+    dms quickshell-git cliphist matugen dgop danksearch material-symbols-fonts
 
 # Screenshot annotator
 dnf5 -y install \
     --enablerepo="copr:copr.fedorainfracloud.org:mineiro:satty" \
     satty
 
-# GTK theme tweaker
-dnf5 -y install \
-    --enablerepo="copr:copr.fedorainfracloud.org:solopasha:hyprland" \
-    nwg-look
-
 # Screen recorder with instant-replay UI
 dnf5 -y install \
     --enablerepo="copr:copr.fedorainfracloud.org:brycensranch:gpu-screen-recorder-git" \
     gpu-screen-recorder gpu-screen-recorder-ui
-
-# Install niri without weak deps (skips waybar and swaylock recommendations;
-# caelestia-shell provides the bar and lock screen)
-dnf5 -y install --setopt=install_weak_deps=False niri
-
-# Build-time dependencies for niri-caelestia-shell
-dnf5 -y install \
-    cmake ninja-build gcc-c++ git \
-    qt6-qtdeclarative-devel qt6-qtbase-devel qt6-qtmultimedia-devel \
-    kf6-networkmanager-qt-devel \
-    pipewire-devel aubio-devel \
-    libqalculate-devel
-
-dnf5 -y install \
-    --enablerepo="copr:copr.fedorainfracloud.org:celestelove:libcava" \
-    libcava-devel
 
 echo "::endgroup::"

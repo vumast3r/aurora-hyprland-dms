@@ -4,7 +4,14 @@ set -eoux pipefail
 echo "::group:: Sanity checks"
 
 REQUIRED_PACKAGES=(
-    niri
+    hyprland
+    hyprlock
+    hypridle
+    hyprpaper
+    xdg-desktop-portal-hyprland
+    dms
+    dgop
+    danksearch
     quickshell-git
     greetd
     tuigreet
@@ -14,40 +21,32 @@ REQUIRED_PACKAGES=(
     fish
     cliphist
     matugen
-    xwayland-satellite
     lm_sensors
     tuned-ppd
-    app2unit
     satty
     nwg-look
     gpu-screen-recorder
-    rubik-fonts
-    cascadia-code-nerd-fonts
     material-symbols-fonts
     pinentry-qt
-    libcava
+    accountsservice
 )
 
 for package in "${REQUIRED_PACKAGES[@]}"; do
     rpm -q "${package}" >/dev/null || { echo "Missing package: ${package}"; exit 1; }
 done
 
-# Check that caelestia-shell was installed
-test -d /usr/share/quickshell/niri-caelestia-shell || { echo "niri-caelestia-shell not installed"; exit 1; }
-
-# Check wayland session file
-test -f /usr/share/wayland-sessions/niri-caelestia.desktop || { echo "Missing wayland session desktop file"; exit 1; }
+# Check DankMaterialShell installed via quickshell config path
+test -d /usr/share/quickshell/dms || { echo "DankMaterialShell not installed at /usr/share/quickshell/dms"; exit 1; }
 
 # Check Material Symbols font
 test -f /usr/share/fonts/material-symbols-fonts/MaterialSymbolsRounded.ttf || { echo "Missing Material Symbols font"; exit 1; }
 
 # Check default configs
-test -f /etc/skel/.config/niri/config.kdl || { echo "Missing niri config"; exit 1; }
-test -f /etc/skel/.config/caelestia/shell.json || { echo "Missing caelestia config"; exit 1; }
+test -f /etc/skel/.config/hypr/hyprland.conf || { echo "Missing hyprland config"; exit 1; }
+test -f /etc/greetd/config.toml || { echo "Missing greetd config"; exit 1; }
 
 # Check services
 systemctl is-enabled greetd.service >/dev/null || { echo "greetd not enabled"; exit 1; }
-test -f /etc/greetd/config.toml || { echo "Missing greetd config"; exit 1; }
 systemctl is-enabled NetworkManager.service >/dev/null || { echo "NetworkManager not enabled"; exit 1; }
 systemctl is-enabled tuned-ppd.service >/dev/null || { echo "tuned-ppd not enabled"; exit 1; }
 
