@@ -5,10 +5,10 @@ stages:
 
 build niri-caelestia:
   stage: build
+  interruptible: true
   script:
     - buildah build
-        --layers
         --build-arg FEDORA_MAJOR_VERSION=43
         -t niri-caelestia:43
         .
-  timeout: 60m
+  timeout: 90m
