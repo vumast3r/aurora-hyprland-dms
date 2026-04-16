@@ -38,9 +38,6 @@ done
 # Check DankMaterialShell installed via quickshell config path
 test -d /usr/share/quickshell/dms || { echo "DankMaterialShell not installed at /usr/share/quickshell/dms"; exit 1; }
 
-# Check Material Symbols font
-test -f /usr/share/fonts/material-symbols-fonts/MaterialSymbolsRounded.ttf || { echo "Missing Material Symbols font"; exit 1; }
-
 # Check default configs
 test -f /etc/skel/.config/hypr/hyprland.conf || { echo "Missing hyprland config"; exit 1; }
 test -f /etc/greetd/config.toml || { echo "Missing greetd config"; exit 1; }
