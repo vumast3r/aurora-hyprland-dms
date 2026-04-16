@@ -1,0 +1,20 @@
+{
+  "terminal": ["kitty"],
+  "explorer": ["thunar"],
+  "fonts": {
+    "main": "JetBrains Mono",
+    "titlebar": "Rubik",
+    "iconFont": "Material Symbols Rounded"
+  },
+  "wallpaperDir": "~/Pictures/Wallpapers",
+  "gpuType": "",
+  "time": {
+    "use12h": true
+  },
+  "weather": {
+    "location": "Denver"
+  },
+  "theme": {
+    "name": "catppuccin-mocha"
+  }
+}
