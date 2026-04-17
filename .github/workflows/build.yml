@@ -5,12 +5,10 @@ on:
     branches: [main]
     paths-ignore:
       - '**/*.md'
-      - '.gitlab-ci.yml'
   pull_request:
     branches: [main]
     paths-ignore:
       - '**/*.md'
-      - '.gitlab-ci.yml'
   schedule:
     - cron: '0 6 * * 1'
   workflow_dispatch:
@@ -69,6 +67,13 @@ jobs:
           tags: ${{ steps.tags.outputs.tags }}
           build-args: |
             FEDORA_MAJOR_VERSION=${{ env.FEDORA_MAJOR_VERSION }}
+          labels: |
+            org.opencontainers.image.title=${{ env.IMAGE_NAME }}
+            org.opencontainers.image.description=Aurora-flavored Fedora bootc image with Hyprland and DankMaterialShell
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
+            org.opencontainers.image.url=https://github.com/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.licenses=Apache-2.0
           oci: true
 
       - name: Login to GHCR
