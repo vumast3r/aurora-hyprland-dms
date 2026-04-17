@@ -81,6 +81,10 @@ podman build -t aurora-hyprland-dms:43 --build-arg FEDORA_MAJOR_VERSION=43 .
 
 You'll need ~15 GB of free space and a recent podman/buildah.
 
+## License
+
+Mozilla Public License 2.0 — see [LICENSE](./LICENSE).
+
 ## Credits
 
 - [ublue-os/aurora](https://github.com/ublue-os/aurora) — base image lineage and conventions
