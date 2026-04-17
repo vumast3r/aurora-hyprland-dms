@@ -23,14 +23,7 @@ The package is public — no `podman login` needed to pull.
 
 ## Rebasing an existing host
 
-From any kinoite/bootc-based Fedora 43 system:
-
-```bash
-sudo bootc switch ghcr.io/vumast3r/aurora-hyprland-dms:latest
-sudo systemctl reboot
-```
-
-On hosts still using `rpm-ostree` rather than `bootc`:
+From any kinoite-based Fedora 43 system:
 
 ```bash
 sudo rpm-ostree rebase ostree-unverified-registry:ghcr.io/vumast3r/aurora-hyprland-dms:latest
@@ -40,7 +33,7 @@ sudo systemctl reboot
 To roll back:
 
 ```bash
-sudo bootc rollback
+sudo rpm-ostree rollback
 sudo systemctl reboot
 ```
 
