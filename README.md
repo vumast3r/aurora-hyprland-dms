@@ -1,11 +1,14 @@
 # aurora-hyprland-dms
 
-A Fedora bootc image derived from `kinoite:43`, swapping the KDE Plasma session
-for [Hyprland](https://hypr.land) + [DankMaterialShell](https://github.com/AvengeMedia/DankMaterialShell)
+A Fedora bootc image derived from
+[`ublue-os/aurora-nvidia-open:43`](https://github.com/ublue-os/aurora),
+swapping the KDE Plasma session for
+[Hyprland](https://hypr.land) + [DankMaterialShell](https://github.com/AvengeMedia/DankMaterialShell)
 (via [Quickshell](https://quickshell.org)) and using
 [greetd + tuigreet](https://git.sr.ht/~kennylevinsen/greetd) as the login
-manager. Everything else from the kinoite base — pipewire, NetworkManager,
-Flatpak, the bootc/ostree machinery — is preserved.
+manager. Everything else from the Aurora base — nvidia-open drivers, codecs,
+ublue tooling, pipewire, NetworkManager, Flatpak, the bootc/ostree machinery —
+is preserved.
 
 ## Image
 
@@ -23,7 +26,7 @@ The package is public — no `podman login` needed to pull.
 
 ## Rebasing an existing host
 
-From any kinoite-based Fedora 43 system:
+From any Aurora- or kinoite-based Fedora 43 system:
 
 ```bash
 sudo rpm-ostree rebase ostree-unverified-registry:ghcr.io/vumast3r/aurora-hyprland-dms:latest
