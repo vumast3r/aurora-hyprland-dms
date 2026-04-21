@@ -1,0 +1,47 @@
+# Mirrors .github/workflows/build.yml — builds the Containerfile with
+# aurora-nvidia-open:43 as the base and pushes the result to this
+# project's GitLab Container Registry.
+
+stages:
+  - build
+
+variables:
+  FEDORA_MAJOR_VERSION: "43"
+  IMAGE_NAME: aurora-hyprland-dms
+  # vfs avoids needing overlayfs/fuse inside the runner; slower but works
+  # on stock docker executors without privileged mode gymnastics.
+  STORAGE_DRIVER: vfs
+  BUILDAH_FORMAT: oci
+
+build:
+  stage: build
+  image: quay.io/buildah/stable:latest
+  interruptible: true
+  timeout: 90m
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"'
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | buildah login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+  script:
+    - DATE=$(date -u +%Y%m%d)
+    - SHORT_SHA="${CI_COMMIT_SHORT_SHA}"
+    - |
+      buildah build \
+        --build-arg FEDORA_MAJOR_VERSION="${FEDORA_MAJOR_VERSION}" \
+        --label org.opencontainers.image.title="${IMAGE_NAME}" \
+        --label org.opencontainers.image.description="Aurora-flavored Fedora bootc image with Hyprland and DankMaterialShell" \
+        --label org.opencontainers.image.source="${CI_PROJECT_URL}" \
+        --label org.opencontainers.image.url="${CI_PROJECT_URL}" \
+        --label org.opencontainers.image.revision="${CI_COMMIT_SHA}" \
+        --label org.opencontainers.image.licenses=MPL-2.0 \
+        -t "${CI_REGISTRY_IMAGE}:${FEDORA_MAJOR_VERSION}" \
+        -t "${CI_REGISTRY_IMAGE}:${FEDORA_MAJOR_VERSION}-${DATE}" \
+        -t "${CI_REGISTRY_IMAGE}:${FEDORA_MAJOR_VERSION}-${SHORT_SHA}" \
+        -t "${CI_REGISTRY_IMAGE}:latest" \
+        .
+    - buildah push "${CI_REGISTRY_IMAGE}:${FEDORA_MAJOR_VERSION}"
+    - buildah push "${CI_REGISTRY_IMAGE}:${FEDORA_MAJOR_VERSION}-${DATE}"
+    - buildah push "${CI_REGISTRY_IMAGE}:${FEDORA_MAJOR_VERSION}-${SHORT_SHA}"
+    - buildah push "${CI_REGISTRY_IMAGE}:latest"
