@@ -8,6 +8,8 @@ REQUIRED_PACKAGES=(
     hyprlock
     hypridle
     hyprpaper
+    hyprscroller
+    hyprland-plugins
     xdg-desktop-portal-hyprland
     dms
     dgop
@@ -41,6 +43,17 @@ test -d /usr/share/quickshell/dms || { echo "DankMaterialShell not installed at 
 # Check default configs
 test -f /etc/skel/.config/hypr/hyprland.conf || { echo "Missing hyprland config"; exit 1; }
 test -f /etc/greetd/config.toml || { echo "Missing greetd config"; exit 1; }
+
+# Verify plugin .so paths referenced by /etc/skel/.config/hypr/hyprland.conf.
+# If solopasha's RPM layout changes, fail here so we update the config path.
+for plugin_so in /usr/lib64/hyprland-plugins/libhyprscroller.so /usr/lib64/hyprland-plugins/libhyprexpo.so; do
+    if [[ ! -f "${plugin_so}" ]]; then
+        echo "Missing Hyprland plugin: ${plugin_so}"
+        echo "Search results for plugin .so files:"
+        rpm -ql hyprscroller hyprland-plugins | grep -E '\.so$' || true
+        exit 1
+    fi
+done
 
 # Check services
 systemctl is-enabled greetd.service >/dev/null || { echo "greetd not enabled"; exit 1; }

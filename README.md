@@ -43,6 +43,7 @@ sudo systemctl reboot
 ## What's in the image
 
 - **Compositor**: hyprland, hyprlock, hypridle, hyprpaper, xdg-desktop-portal-hyprland (solopasha/hyprland COPR)
+- **Layout**: [hyprscroller](https://github.com/dawsers/hyprscroller) for niri-style scrolling-column tiling, [hyprexpo](https://github.com/hyprwm/hyprland-plugins) for the workspace overview
 - **Shell**: DankMaterialShell + Quickshell, dgop, danksearch, matugen, cliphist, material-symbols-fonts (avengemedia/dms + danklinux COPRs)
 - **Login**: greetd + tuigreet (replaces SDDM)
 - **Terminal / files**: kitty, Thunar, fish
