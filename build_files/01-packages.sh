@@ -146,13 +146,14 @@ HYPR_PACKAGES=(
 
 dnf5 -y install "${HYPR_PACKAGES[@]}"
 
-# Hyprland stack from solopasha/hyprland
-# hyprscroller gives niri-style scrolling-column layout inside Hyprland;
-# hyprland-plugins provides hyprexpo (workspace overview).
+# Hyprland stack from solopasha/hyprland.
+# hyprland-plugins provides hyprexpo (workspace overview). hyprscroller
+# (community plugin for niri-style scrolling columns) is not packaged in
+# this COPR; 02-plugins.sh builds it from source against hyprland-devel.
 dnf5 -y install \
     --enablerepo="copr:copr.fedorainfracloud.org:solopasha:hyprland" \
     hyprland hyprlock hypridle hyprpaper xdg-desktop-portal-hyprland nwg-look \
-    hyprscroller hyprland-plugins
+    hyprland-plugins
 
 # DankMaterialShell runtime (shell, cli, system monitor, search, fonts, quickshell)
 dnf5 -y install \

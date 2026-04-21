@@ -8,7 +8,6 @@ REQUIRED_PACKAGES=(
     hyprlock
     hypridle
     hyprpaper
-    hyprscroller
     hyprland-plugins
     xdg-desktop-portal-hyprland
     dms
@@ -45,12 +44,15 @@ test -f /etc/skel/.config/hypr/hyprland.conf || { echo "Missing hyprland config"
 test -f /etc/greetd/config.toml || { echo "Missing greetd config"; exit 1; }
 
 # Verify plugin .so paths referenced by /etc/skel/.config/hypr/hyprland.conf.
-# If solopasha's RPM layout changes, fail here so we update the config path.
+# libhyprscroller.so is produced by 02-plugins.sh (source build);
+# libhyprexpo.so comes from the hyprland-plugins RPM. If either is missing,
+# print what the RPM layout looks like so we can fix the config path.
 for plugin_so in /usr/lib64/hyprland-plugins/libhyprscroller.so /usr/lib64/hyprland-plugins/libhyprexpo.so; do
     if [[ ! -f "${plugin_so}" ]]; then
         echo "Missing Hyprland plugin: ${plugin_so}"
         echo "Search results for plugin .so files:"
-        rpm -ql hyprscroller hyprland-plugins | grep -E '\.so$' || true
+        rpm -ql hyprland-plugins | grep -E '\.so$' || true
+        find /usr/lib64 /usr/lib -maxdepth 4 -name 'libhypr*.so' 2>/dev/null || true
         exit 1
     fi
 done

@@ -14,6 +14,10 @@ RUN --mount=type=cache,dst=/var/cache/libdnf5 \
     chmod +x /tmp/build_files/*.sh && \
     /tmp/build_files/01-packages.sh
 
+# Build out-of-tree Hyprland plugins (hyprscroller) from source
+RUN --mount=type=cache,dst=/var/cache/libdnf5 \
+    /tmp/build_files/02-plugins.sh
+
 # Install configs and system files
 RUN /tmp/build_files/03-configs.sh
 
