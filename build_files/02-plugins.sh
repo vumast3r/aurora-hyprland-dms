@@ -13,12 +13,19 @@ dnf5 -y install \
     --enablerepo="copr:copr.fedorainfracloud.org:solopasha:hyprland" \
     "${BUILD_DEPS[@]}"
 
-# Pin so rebuilds are reproducible; bump deliberately when upstream
-# introduces useful changes.
-HYPRSCROLLER_REV="${HYPRSCROLLER_REV:-main}"
+# When HYPRSCROLLER_REV is set (tag, branch, or full sha), pin to it;
+# otherwise track the repo's default branch. We don't hardcode "main" or
+# "master" because dawsers/hyprscroller has historically used different
+# default branch names.
+HYPRSCROLLER_REV="${HYPRSCROLLER_REV:-}"
 
-git clone --depth 1 --branch "${HYPRSCROLLER_REV}" \
-    https://github.com/dawsers/hyprscroller.git /tmp/hyprscroller
+if [[ -n "${HYPRSCROLLER_REV}" ]]; then
+    git clone --depth 1 --branch "${HYPRSCROLLER_REV}" \
+        https://github.com/dawsers/hyprscroller.git /tmp/hyprscroller
+else
+    git clone --depth 1 \
+        https://github.com/dawsers/hyprscroller.git /tmp/hyprscroller
+fi
 make -C /tmp/hyprscroller all
 
 # The Makefile output name varies across revisions (hyprscroller.so vs
