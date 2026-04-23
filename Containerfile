@@ -1,4 +1,4 @@
-ARG BASE_IMAGE="quay.io/fedora-ostree-desktops/kinoite"
+ARG BASE_IMAGE="ghcr.io/ublue-os/aurora-nvidia-open"
 ARG FEDORA_MAJOR_VERSION="43"
 
 FROM ${BASE_IMAGE}:${FEDORA_MAJOR_VERSION}

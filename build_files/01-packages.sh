@@ -3,8 +3,9 @@ set -eoux pipefail
 
 echo "::group:: Install niri-dms packages"
 
-# Remove KDE-specific packages we don't need
-# (kinoite base provides SDDM, Qt6, pipewire, NetworkManager, etc. which we keep)
+# Remove KDE-specific packages we don't need.
+# aurora-nvidia-open base gives us: nvidia-open drivers, ublue tooling,
+# codecs, Flatpak setup, Qt6, pipewire, NetworkManager — all kept.
 KDE_REMOVE=(
     plasma-desktop
     plasma-workspace
@@ -90,7 +91,7 @@ do
     dnf5 -y copr disable "$copr"
 done
 
-# Packages to add on top of kinoite base
+# Packages to add on top of aurora-nvidia-open base
 NIRI_PACKAGES=(
     # Login manager
     greetd
@@ -106,7 +107,7 @@ NIRI_PACKAGES=(
     cava
     pavucontrol
     playerctl
-    # Display, brightness, sensors (tuned-ppd comes from kinoite base)
+    # Display, brightness, sensors (tuned-ppd comes from the Aurora base)
     brightnessctl
     ddcutil
     lm_sensors
