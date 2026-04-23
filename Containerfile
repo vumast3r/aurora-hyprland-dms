@@ -9,14 +9,10 @@ ARG FEDORA_MAJOR_VERSION="43"
 COPY build_files /tmp/build_files
 COPY system_files /tmp/system_files
 
-# Install niri-caelestia packages
+# Install niri-dms packages
 RUN --mount=type=cache,dst=/var/cache/libdnf5 \
     chmod +x /tmp/build_files/*.sh && \
     /tmp/build_files/01-packages.sh
-
-# Build and install niri-caelestia-shell from source
-RUN --mount=type=cache,dst=/var/cache/libdnf5 \
-    /tmp/build_files/02-caelestia-shell.sh
 
 # Install configs and system files
 RUN /tmp/build_files/03-configs.sh

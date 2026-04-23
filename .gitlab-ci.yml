@@ -3,12 +3,12 @@ image: quay.io/fedora-ostree-desktops/buildroot:43
 stages:
   - build
 
-build niri-caelestia:
+build niri-dms:
   stage: build
   script:
     - buildah build
         --layers
         --build-arg FEDORA_MAJOR_VERSION=43
-        -t niri-caelestia:43
+        -t niri-dms:43
         .
   timeout: 60m

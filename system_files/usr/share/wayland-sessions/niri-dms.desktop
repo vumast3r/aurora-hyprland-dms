@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Niri (DMS)
+Comment=Scrollable tiling Wayland compositor with DankMaterialShell
+Exec=niri-session
+Type=Application
+DesktopNames=niri

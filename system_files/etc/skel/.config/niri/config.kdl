@@ -1,4 +1,4 @@
-// Niri configuration for Caelestia Shell
+// Niri configuration for DankMaterialShell
 // See https://github.com/YaLTeR/niri/wiki/Configuration
 
 input {
@@ -31,7 +31,7 @@ layout {
     }
 }
 
-spawn-at-startup "quickshell" "-c" "niri-caelestia-shell" "-n"
+spawn-at-startup "qs" "-c" "dms"
 spawn-at-startup "xwayland-satellite"
 
 prefer-no-csd
@@ -71,13 +71,10 @@ binds {
     Mod+Return { spawn "kitty"; }
     Mod+E { spawn "thunar"; }
 
-    // Caelestia Shell IPC
-    Mod+Space { spawn "qs" "-c" "niri-caelestia-shell" "ipc" "call" "toggleLauncher"; }
-    Mod+V { spawn "qs" "-c" "niri-caelestia-shell" "ipc" "call" "toggleClipboard"; }
+    // DMS IPC
+    Mod+Space { spawn "qs" "-c" "dms" "ipc" "call" "spotlight" "toggle"; }
+    Mod+V { spawn "qs" "-c" "dms" "ipc" "call" "clipboard" "toggle"; }
     Mod+Tab { toggle-overview; }
-
-    // Session
-    Mod+L { spawn "qs" "-c" "niri-caelestia-shell" "ipc" "call" "toggleSessionMenu"; }
 
     // Layout
     Mod+F { maximize-column; }
